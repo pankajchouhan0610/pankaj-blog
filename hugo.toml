@@ -1,4 +1,4 @@
-baseURL = "https://pankaj-blog.netlify.app/"
+baseURL = "https://pankajchouhan-blog.netlify.app/"
 languageCode = "en-us"
 title = "Pankaj"
 theme = "PaperMod"
@@ -41,10 +41,14 @@ theme = "PaperMod"
                                                                 url = "/tags/"
                                                                     weight = 20
 
-                                                                    [markup]
-                                                                      [markup.goldmark]
-                                                                          [markup.goldmark.renderer]
-                                                                                unsafe = true
-                                                                                  [markup.highlight]
-                                                                                      style = "monokai"
-                                                                                          lineNos = true
+                                                                    [module]
+                                                                      [[module.imports]]
+                                                                          path = "github.com/adityatelange/hugo-PaperMod"
+
+                                                                          [markup]
+                                                                            [markup.goldmark]
+                                                                                [markup.goldmark.renderer]
+                                                                                      unsafe = true
+                                                                                        [markup.highlight]
+                                                                                            style = "monokai"
+                                                                                                lineNos = true
