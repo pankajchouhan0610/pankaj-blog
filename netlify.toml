@@ -1,10 +1,12 @@
 [build]
   publish = "public"
-  command = "hugo mod download && hugo --minify"
+  command = "hugo --minify"
 
   [build.environment]
   HUGO_VERSION = "0.147.8"
   HUGO_ENV = "production"
   GO_VERSION = "1.21"
   GONOSUMCHECK = "*"
+  GONOSUMDB = "*"
   GOFLAGS = "-mod=mod"
+  GOPATH = "/opt/build/cache/go"
