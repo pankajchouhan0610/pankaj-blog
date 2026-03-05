@@ -1,5 +1,5 @@
 ---
-title: Why I Love Open Source — And You Should Too
+title: Why I Love Open Source — And You Should Too update
 date: 2026-05-03
 draft: false
 description: Open source changed how I think about code, collaboration, and
