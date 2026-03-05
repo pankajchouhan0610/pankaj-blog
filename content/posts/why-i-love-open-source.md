@@ -1,12 +1,15 @@
 ---
-title: "Why I Love Open Source — And You Should Too"
+title: Why I Love Open Source — And You Should Too
 date: 2026-05-03
 draft: false
-tags: ["open-source", "software", "career"]
-description: "Open source changed how I think about code, collaboration, and career growth. Here is why I think every developer should get involved."
+description: Open source changed how I think about code, collaboration, and
+  career growth. Here is why I think every developer should get involved.
+tags:
+  - software
+  - open-source
+  - career
 ---
-
-I still remember the first time I opened a GitHub repository of a project I used every day. I had been consuming open-source software for years — using VS Code, reading Reddit threads praising Linux, running npm packages without a second thought. But actually *reading* the source code of something real, something thousands of people depended on, felt different.
+I still remember the first time I opened a GitHub repository of a project I used every day. I had been consuming open-source software for years — using VS Code, reading Reddit threads praising Linux, running npm packages without a second thought. But actually _reading_ the source code of something real, something thousands of people depended on, felt different.
 
 That moment changed how I write code. And honestly, it changed how I think about my career.
 
@@ -20,7 +23,7 @@ That is both humbling and exciting.
 
 ## Why I Started Contributing
 
-My entry point was embarrassingly simple: a typo in a README file. I was reading the documentation for a library I used at work, spotted a misspelling, and thought — *can I fix this?* I forked the repo, made the change, and opened a pull request. It was merged within an hour.
+My entry point was embarrassingly simple: a typo in a README file. I was reading the documentation for a library I used at work, spotted a misspelling, and thought — _can I fix this?_ I forked the repo, made the change, and opened a pull request. It was merged within an hour.
 
 It sounds trivial. But something clicked that day.
 
@@ -32,7 +35,7 @@ Here is what contributing to open source has actually done for my career:
 
 **Code review from strangers is underrated.** When maintainers review your pull request, they are brutally honest in a way colleagues sometimes are not. I have learned more from open-source code review feedback than from any online course.
 
-**Reading other people's code is a skill.** Most tutorials teach you to write code. Open source forces you to *read* code — to understand design decisions, to trace through unfamiliar logic, to ask "why did they do it this way?" That skill is invaluable.
+**Reading other people's code is a skill.** Most tutorials teach you to write code. Open source forces you to _read_ code — to understand design decisions, to trace through unfamiliar logic, to ask "why did they do it this way?" That skill is invaluable.
 
 **You build a public portfolio without trying.** Your GitHub profile becomes a living resume. Recruiters look at it. But more importantly, it shows you can navigate real codebases and work with a community — things a to-do app project cannot demonstrate.
 
@@ -54,6 +57,6 @@ Contributing back is not just professionally smart. It is the right thing to do.
 
 So go open a repository you love, find something small to fix, and make your first pull request. The community is waiting — and it is friendlier than you think.
 
----
+* * *
 
-*Thanks for reading. If you have thoughts or your own open-source story, feel free to reach out.*
+_Thanks for reading. If you have thoughts or your own open-source story, feel free to reach out._
