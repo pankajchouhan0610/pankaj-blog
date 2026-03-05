@@ -1,7 +1,6 @@
 baseURL = "https://pankajchouhan-blog.netlify.app/"
 languageCode = "en-us"
 title = "Pankaj"
-theme = "PaperMod"
 
 [params]
   author = "Pankaj Chouhan"
