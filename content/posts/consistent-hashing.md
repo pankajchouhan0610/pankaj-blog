@@ -1,11 +1,16 @@
 ---
-title: "Understanding Consistent Hashing: A Guide to Scalable System Design"
+title: "Understanding Consistent Hashing: A Guide to Scalable System Design up"
 date: 2026-03-05
 draft: false
-tags: ["system-design", "distributed-systems", "hashing", "scalability"]
-description: "Consistent hashing is a fundamental technique for building scalable distributed systems. Learn how it works, why it matters, and how to implement it effectively."
+description: Consistent hashing is a fundamental technique for building scalable
+  distributed systems. Learn how it works, why it matters, and how to implement
+  it effectively.
+tags:
+  - system-design
+  - distributed-systems
+  - hashing
+  - scalability
 ---
-
 In the world of distributed systems, horizontal scaling is the name of the game. Whether you are building a distributed cache like Memcached or a NoSQL database like Cassandra, you need a way to distribute data across multiple nodes.
 
 But what happens when you add or remove a node? If you are using traditional hashing, the answer is usually: **chaos.**
@@ -36,8 +41,8 @@ The core idea is to map both the **nodes** and the **keys** onto a circular addr
 
 ### Handling Node Changes
 
-- **Adding a Node:** When a new node is added, it only takes over keys from its immediate counter-clockwise neighbor. Other nodes remain unaffected.
-- **Removing a Node:** When a node is removed, its keys are reassigned to its immediate clockwise neighbor. Again, the rest of the ring stays the same.
+*   **Adding a Node:** When a new node is added, it only takes over keys from its immediate counter-clockwise neighbor. Other nodes remain unaffected.
+*   **Removing a Node:** When a node is removed, its keys are reassigned to its immediate clockwise neighbor. Again, the rest of the ring stays the same.
 
 ## The "Hot Spot" Problem and Virtual Nodes
 
@@ -46,6 +51,7 @@ In a simple hash ring, nodes might not be uniformly distributed, leading to some
 To solve this, we use **Virtual Nodes** (or "vnodes"). Instead of placing a node once on the ring, we place it multiple times using different hash functions (e.g., `hash(node_id + "_1")`, `hash(node_id + "_2")`, etc.).
 
 This ensures:
+
 1.  **Better Balance:** With more points on the ring, the distribution of keys becomes more uniform.
 2.  **Heterogeneity:** You can assign more virtual nodes to powerful servers and fewer to weaker ones, balancing the load based on capacity.
 
@@ -53,9 +59,9 @@ This ensures:
 
 Consistent hashing is the backbone of many systems we use every day:
 
-- **Content Delivery Networks (CDNs):** To distribute web content across edge servers.
-- **Load Balancers:** To ensure sticky sessions even when the server pool changes.
-- **Distributed Databases:** Like Amazon DynamoDB and Apache Cassandra, for partitioning data.
+*   **Content Delivery Networks (CDNs):** To distribute web content across edge servers.
+*   **Load Balancers:** To ensure sticky sessions even when the server pool changes.
+*   **Distributed Databases:** Like Amazon DynamoDB and Apache Cassandra, for partitioning data.
 
 ## Conclusion
 
@@ -63,6 +69,6 @@ System design is often about trade-offs. Consistent hashing is one of those rare
 
 If you are designing a system that needs to grow, start thinking in circles.
 
----
+* * *
 
-*Thanks for reading! If you are interested in more system design deep dives, stay tuned for future posts.*
+_Thanks for reading! If you are interested in more system design deep dives, stay tuned for future posts._
