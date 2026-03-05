@@ -1,10 +1,12 @@
 ---
-title: "Why I Love Open Source — And You Should Too"
+title: "Why I Love Open Source — And You Should Too - Update"
 date: 2026-05-03
 draft: false
 tags: ["open-source", "software", "career"]
 description: "Open source changed how I think about code, collaboration, and career growth. Here is why I think every developer should get involved."
 ---
+
+
 
 I still remember the first time I opened a GitHub repository of a project I used every day. I had been consuming open-source software for years — using VS Code, reading Reddit threads praising Linux, running npm packages without a second thought. But actually *reading* the source code of something real, something thousands of people depended on, felt different.
 

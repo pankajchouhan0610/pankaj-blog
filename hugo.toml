@@ -1,53 +1,50 @@
 baseURL = "https://pankajchouhan-blog.netlify.app/"
 languageCode = "en-us"
 title = "Pankaj"
+theme = "PaperMod"
 
 [params]
   author = "Pankaj Chouhan"
-    description = "Tech, thoughts, and everything in between"
-      ShowReadingTime = true
-        ShowPostNavLinks = true
-          ShowBreadCrumbs = true
-            ShowCodeCopyButtons = true
-              defaultTheme = "light"
-                disableThemeToggle = false
+  description = "Tech, thoughts, and everything in between"
+  ShowReadingTime = true
+  ShowPostNavLinks = true
+  ShowBreadCrumbs = true
+  ShowCodeCopyButtons = true
+  defaultTheme = "light"
+  disableThemeToggle = false
 
-                [params.homeInfoParams]
-                  Title = "Pankaj Chouhan"
-                    Content = "Welcome to my blog — sharing thoughts on tech, software, and more."
+  [params.homeInfoParams]
+    Title = "Pankaj Chouhan"
+    Content = "Welcome to my blog — sharing thoughts on tech, software, and more."
 
-                    [[params.socialIcons]]
-                      name = "twitter"
-                        url = "https://twitter.com/"
+  [[params.socialIcons]]
+    name = "twitter"
+    url = "https://twitter.com/"
 
-                        [[params.socialIcons]]
-                          name = "github"
-                            url = "https://github.com/pankajchouhan0610"
+  [[params.socialIcons]]
+    name = "github"
+    url = "https://github.com/pankajchouhan0610"
 
-                            [[params.socialIcons]]
-                              name = "linkedin"
-                                url = "https://linkedin.com/"
+  [[params.socialIcons]]
+    name = "linkedin"
+    url = "https://linkedin.com/"
 
-                                [menu]
-                                  [[menu.main]]
-                                      identifier = "about"
-                                          name = "About"
-                                              url = "/about/"
-                                                  weight = 10
-                                                    [[menu.main]]
-                                                        identifier = "tags"
-                                                            name = "Tags"
-                                                                url = "/tags/"
-                                                                    weight = 20
+[menu]
+  [[menu.main]]
+    identifier = "about"
+    name = "About"
+    url = "/about/"
+    weight = 10
+  [[menu.main]]
+    identifier = "tags"
+    name = "Tags"
+    url = "/tags/"
+    weight = 20
 
-                                                                    [module]
-                                                                      [[module.imports]]
-                                                                          path = "github.com/adityatelange/hugo-PaperMod"
-
-                                                                          [markup]
-                                                                            [markup.goldmark]
-                                                                                [markup.goldmark.renderer]
-                                                                                      unsafe = true
-                                                                                        [markup.highlight]
-                                                                                            style = "monokai"
-                                                                                                lineNos = true
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+  [markup.highlight]
+    style = "monokai"
+    lineNos = true
