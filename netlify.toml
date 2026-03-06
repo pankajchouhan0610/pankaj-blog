@@ -10,3 +10,8 @@
   GONOSUMDB = "*"
   GOFLAGS = "-mod=mod"
   GOPATH = "/opt/build/cache/go"
+
+[[redirects]]
+  from = "/admin"
+  to = "/admin/index.html"
+  status = 200
