@@ -36,6 +36,7 @@ The core idea is to map both the **nodes** and the **keys** onto a circular addr
 
 ### Handling Node Changes
 
+
 - **Adding a Node:** When a new node is added, it only takes over keys from its immediate counter-clockwise neighbor. Other nodes remain unaffected.
 - **Removing a Node:** When a node is removed, its keys are reassigned to its immediate clockwise neighbor. Again, the rest of the ring stays the same.
 
