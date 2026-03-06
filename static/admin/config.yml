@@ -1,0 +1,37 @@
+backend:
+  name: github
+  repo: pankajchouhan0610/pankaj-blog
+  branch: main
+  auth_type: pkce
+  app_id: Ov23liJDSAv2yCF7DVm8
+
+media_folder: static/images
+public_folder: /images
+
+collections:
+  - name: posts
+    label: Blog Posts
+    folder: content/posts
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false }
+      - { label: "Draft", name: "draft", widget: "boolean", default: false }
+      - { label: "Description", name: "description", widget: "text", required: false }
+      - { label: "Tags", name: "tags", widget: "list", required: false }
+      - { label: "Cover Image", name: "cover", widget: "image", required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: about
+    label: About Page
+    files:
+      - label: "About"
+        name: "about"
+        file: "content/about.md"
+        fields:
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Layout", name: "layout", widget: "hidden", default: "about" }
+          - { label: "URL", name: "url", widget: "hidden", default: "/about/" }
+          - { label: "Summary", name: "summary", widget: "hidden", default: "about" }
+          - { label: "Body", name: "body", widget: "markdown" }
