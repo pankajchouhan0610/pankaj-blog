@@ -1,6 +1,6 @@
 /* ============================================
    PANKAJ BLOG - CUSTOM THEME
-   Inspired by manthanguptaa.in (minimal, warm, editorial)
+
    ============================================ */
 
 /* ---- Google Fonts ---- */
@@ -19,11 +19,11 @@
   --border-subtle: #e0dbd2;
   --font-heading: 'Lora', Georgia, serif;
   --font-body: 'Inter', system-ui, sans-serif;
-  --max-width: 680px;
+  --main-max-width: 680px;
   --nav-height: 64px;
 }
 
-/* ---- Base & Body ---- */
+/* ---- Base ---- */
 html { scroll-behavior: smooth; }
 
 body {
@@ -36,9 +36,10 @@ body {
 /* ---- Header / Nav ---- */
 .header {
   background-color: rgba(247, 243, 236, 0.94) !important;
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle) !important;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+  box-shadow: none !important;
 }
 
 .logo a, .logo {
@@ -50,18 +51,17 @@ body {
 }
 
 #menu a {
-  font-size: 0.9rem !important;
+  font-size: 0.88rem !important;
   font-weight: 500 !important;
   color: var(--text-secondary) !important;
   letter-spacing: 0.01em;
   transition: color 0.2s;
 }
-
 #menu a:hover { color: var(--text-primary) !important; }
 
 /* ---- Main Wrapper ---- */
 .main {
-  max-width: var(--max-width) !important;
+  max-width: var(--main-max-width) !important;
   margin: 0 auto !important;
   padding: 0 24px !important;
 }
@@ -72,10 +72,13 @@ body {
   align-items: center !important;
   gap: 22px !important;
   padding: 48px 0 52px !important;
+  border: none !important;
+  box-shadow: none !important;
+  text-align: left !important;
 }
+.home-info .buttons { justify-content: flex-start !important; }
 
-.home-info .avatar img,
-.home-info img {
+.home-info .avatar img, .home-info img {
   width: 72px !important;
   height: 72px !important;
   border-radius: 50% !important;
@@ -85,20 +88,23 @@ body {
 }
 
 /* ---- Post List ---- */
-.post-entry {
+article.post-entry {
   padding: 32px 0 !important;
   border-top: 1px solid var(--border-subtle) !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
   background: transparent !important;
   box-shadow: none !important;
   border-radius: 0 !important;
+  margin: 0 !important;
 }
 
-.post-entry:last-of-type {
+article.post-entry:last-of-type {
   border-bottom: 1px solid var(--border-subtle) !important;
 }
 
-.entry-header h2,
-.post-entry .entry-title {
+.entry-header h2, .post-entry .entry-title {
   font-family: var(--font-heading) !important;
   font-size: 1.35rem !important;
   font-weight: 700 !important;
@@ -109,13 +115,10 @@ body {
   transition: color 0.2s;
 }
 
-.post-entry a:hover h2,
-.post-entry:hover .entry-title {
-  color: var(--accent-warm) !important;
-}
+.post-entry a:hover .entry-title,
+.post-entry a:hover h2 { color: var(--accent-warm) !important; }
 
-.entry-footer,
-.post-entry time {
+.entry-footer, .post-entry time, .post-meta {
   font-size: 0.82rem !important;
   color: var(--text-muted) !important;
   letter-spacing: 0.03em;
@@ -129,7 +132,6 @@ body {
   line-height: 1.65;
 }
 
-/* Hide thumbnails in list */
 .entry-cover { display: none !important; }
 
 /* ---- Tags ---- */
@@ -152,6 +154,7 @@ body {
   padding: 8px 22px !important;
   text-decoration: none !important;
   transition: all 0.2s;
+  background: transparent !important;
 }
 .pagination .page-link:hover {
   background: var(--text-primary) !important;
@@ -173,8 +176,17 @@ body {
   line-height: 1.8 !important;
 }
 
-.post-content h2 { font-family: var(--font-heading) !important; font-size: 1.55rem !important; margin-top: 48px !important; }
-.post-content h3 { font-family: var(--font-heading) !important; font-size: 1.25rem !important; margin-top: 40px !important; }
+.post-content h2 {
+  font-family: var(--font-heading) !important;
+  font-size: 1.55rem !important;
+  margin-top: 48px !important;
+  letter-spacing: -0.02em;
+}
+.post-content h3 {
+  font-family: var(--font-heading) !important;
+  font-size: 1.25rem !important;
+  margin-top: 40px !important;
+}
 
 .post-content a {
   color: var(--accent-warm) !important;
@@ -219,4 +231,5 @@ body {
   .main { padding: 0 16px !important; }
   .post-title { font-size: 1.65rem !important; }
   .entry-header h2 { font-size: 1.15rem !important; }
+  .home-info { padding: 32px 0 36px !important; }
 }
