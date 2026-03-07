@@ -203,3 +203,28 @@ body {
   .post-title { font-size: 1.65rem !important; }
   .entry-header h2 { font-size: 1.15rem !important; }
 }
+
+
+/* Fix post-entry borders */
+article.post-entry { border-left: none !important; border-right: none !important; border-bottom: none !important; }
+article.post-entry:last-of-type { border-bottom: 1px solid var(--border-subtle) !important; }
+
+/* Fix home-info / profile section */
+.home-info, .profile-mode .home-info { text-align: left !important; }
+.profile-mode .profile-inner { text-align: left !important; }
+.profile-mode .buttons a { margin: 0 8px 0 0 !important; }
+
+
+/* Fix: remove all post-entry card borders */
+article.post-entry { border-left: none !important; border-right: none !important; }
+article.post-entry:not(:last-of-type) { border-bottom: none !important; }
+
+/* Left-align profile/home-info section */
+.home-info { text-align: left !important; }
+.home-info .buttons { justify-content: flex-start !important; }
+
+/* Nav brand serif font */
+.logo a, .logo { font-family: 'Lora', Georgia, serif !important; font-weight: 700 !important; }
+
+/* Smooth hover on post titles */
+a .entry-title { display: block; }
