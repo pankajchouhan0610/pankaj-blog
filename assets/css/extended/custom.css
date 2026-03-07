@@ -1,0 +1,222 @@
+/* ============================================
+   PANKAJ BLOG - CUSTOM THEME
+   Inspired by manthanguptaa.in (minimal, warm, editorial)
+   ============================================ */
+
+/* ---- Google Fonts ---- */
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
+/* ---- CSS Variables ---- */
+:root {
+  --cream-bg: #f7f3ec;
+  --cream-bg-dark: #ede9e0;
+  --text-primary: #1a1a1a;
+  --text-secondary: #6b6560;
+  --text-muted: #9e9790;
+  --accent-warm: #c8702a;
+  --accent-gold: #e8b84b;
+  --accent-light: #f0e6d3;
+  --border-subtle: #e0dbd2;
+  --font-heading: 'Lora', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --max-width: 680px;
+  --nav-height: 64px;
+}
+
+/* ---- Base & Body ---- */
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--cream-bg) !important;
+  font-family: var(--font-body) !important;
+  color: var(--text-primary) !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- Header / Nav ---- */
+.header {
+  background-color: rgba(247, 243, 236, 0.94) !important;
+  border-bottom: 1px solid var(--border-subtle);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.logo a, .logo {
+  font-family: var(--font-heading) !important;
+  font-weight: 700 !important;
+  font-size: 1.25rem !important;
+  color: var(--text-primary) !important;
+  letter-spacing: -0.02em;
+}
+
+#menu a {
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  color: var(--text-secondary) !important;
+  letter-spacing: 0.01em;
+  transition: color 0.2s;
+}
+
+#menu a:hover { color: var(--text-primary) !important; }
+
+/* ---- Main Wrapper ---- */
+.main {
+  max-width: var(--max-width) !important;
+  margin: 0 auto !important;
+  padding: 0 24px !important;
+}
+
+/* ---- Profile Block ---- */
+.home-info {
+  display: flex !important;
+  align-items: center !important;
+  gap: 22px !important;
+  padding: 48px 0 52px !important;
+}
+
+.home-info .avatar img,
+.home-info img {
+  width: 72px !important;
+  height: 72px !important;
+  border-radius: 50% !important;
+  border: 3px solid var(--border-subtle) !important;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.10) !important;
+  object-fit: cover;
+}
+
+/* ---- Post List ---- */
+.post-entry {
+  padding: 32px 0 !important;
+  border-top: 1px solid var(--border-subtle) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+.post-entry:last-of-type {
+  border-bottom: 1px solid var(--border-subtle) !important;
+}
+
+.entry-header h2,
+.post-entry .entry-title {
+  font-family: var(--font-heading) !important;
+  font-size: 1.35rem !important;
+  font-weight: 700 !important;
+  color: var(--text-primary) !important;
+  line-height: 1.35 !important;
+  letter-spacing: -0.02em;
+  margin: 0 0 8px !important;
+  transition: color 0.2s;
+}
+
+.post-entry a:hover h2,
+.post-entry:hover .entry-title {
+  color: var(--accent-warm) !important;
+}
+
+.entry-footer,
+.post-entry time {
+  font-size: 0.82rem !important;
+  color: var(--text-muted) !important;
+  letter-spacing: 0.03em;
+  margin: 0 !important;
+}
+
+.entry-content p {
+  font-size: 0.92rem !important;
+  color: var(--text-secondary) !important;
+  margin: 6px 0 0 !important;
+  line-height: 1.65;
+}
+
+/* Hide thumbnails in list */
+.entry-cover { display: none !important; }
+
+/* ---- Tags ---- */
+.post-tags a, .terms-tags a {
+  font-size: 0.78rem !important;
+  color: var(--accent-warm) !important;
+  background: var(--accent-light) !important;
+  padding: 3px 10px !important;
+  border-radius: 20px !important;
+  font-weight: 500;
+  text-decoration: none !important;
+}
+
+/* ---- Pagination ---- */
+.pagination .page-link {
+  font-size: 0.88rem !important;
+  color: var(--text-secondary) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: 24px !important;
+  padding: 8px 22px !important;
+  text-decoration: none !important;
+  transition: all 0.2s;
+}
+.pagination .page-link:hover {
+  background: var(--text-primary) !important;
+  color: var(--cream-bg) !important;
+  border-color: var(--text-primary) !important;
+}
+
+/* ---- Single Post ---- */
+.post-title {
+  font-family: var(--font-heading) !important;
+  font-size: 2.1rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.03em !important;
+  line-height: 1.25 !important;
+}
+
+.post-content {
+  font-size: 1.05rem !important;
+  line-height: 1.8 !important;
+}
+
+.post-content h2 { font-family: var(--font-heading) !important; font-size: 1.55rem !important; margin-top: 48px !important; }
+.post-content h3 { font-family: var(--font-heading) !important; font-size: 1.25rem !important; margin-top: 40px !important; }
+
+.post-content a {
+  color: var(--accent-warm) !important;
+  text-decoration: underline;
+  text-decoration-color: rgba(200,112,42,0.3);
+  text-underline-offset: 3px;
+}
+
+.post-content blockquote {
+  border-left: 3px solid var(--accent-warm) !important;
+  padding: 4px 24px !important;
+  color: var(--text-secondary) !important;
+  font-style: italic;
+  font-family: var(--font-heading);
+}
+
+/* ---- Footer ---- */
+.footer {
+  background: var(--cream-bg) !important;
+  border-top: 1px solid var(--border-subtle) !important;
+}
+.footer span, .footer a {
+  font-size: 0.82rem !important;
+  color: var(--text-muted) !important;
+}
+
+/* ---- Dark Mode ---- */
+.dark {
+  --cream-bg: #1a1917;
+  --cream-bg-dark: #242220;
+  --text-primary: #f0ebe3;
+  --text-secondary: #a39d96;
+  --text-muted: #6e6963;
+  --accent-light: #2c2519;
+  --border-subtle: #2e2c28;
+}
+.dark body { background-color: var(--cream-bg) !important; }
+.dark .header { background-color: rgba(26,25,23,0.93) !important; }
+
+/* ---- Responsive ---- */
+@media (max-width: 640px) {
+  .main { padding: 0 16px !important; }
+  .post-title { font-size: 1.65rem !important; }
+  .entry-header h2 { font-size: 1.15rem !important; }
+}
