@@ -12,10 +12,17 @@ theme = "PaperMod"
   ShowCodeCopyButtons = true
   defaultTheme = "light"
   disableThemeToggle = false
+  ShowShareButtons = false
+  ShowToc = true
+  TocOpen = false
+  comments = false
 
   [params.homeInfoParams]
     Title = "Pankaj Chouhan"
-    Content = "Welcome to my blog — sharing thoughts on tech, software, and more."
+    Content = "Tech, thoughts, and everything in between."
+
+  [params.profileMode]
+    enabled = false
 
   [[params.socialIcons]]
     name = "twitter"
@@ -28,6 +35,10 @@ theme = "PaperMod"
   [[params.socialIcons]]
     name = "linkedin"
     url = "https://linkedin.com/"
+
+  [[params.socialIcons]]
+    name = "rss"
+    url = "/index.xml"
 
 [menu]
   [[menu.main]]
@@ -48,3 +59,5 @@ theme = "PaperMod"
   [markup.highlight]
     style = "monokai"
     lineNos = true
+    lineNumbersInTable = true
+    noClasses = true
