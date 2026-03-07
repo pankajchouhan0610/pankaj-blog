@@ -1,6 +1,6 @@
 /* ============================================
    PANKAJ BLOG - CUSTOM THEME
-
+   Inspired by manthanguptaa.in (minimal, warm, editorial)
    ============================================ */
 
 /* ---- Google Fonts ---- */
@@ -21,6 +21,8 @@
   --font-body: 'Inter', system-ui, sans-serif;
   --main-max-width: 680px;
   --nav-height: 64px;
+  /* Override PaperMod's theme color to prevent faded UI elements */
+  --theme: var(--cream-bg);
 }
 
 /* ---- Base ---- */
@@ -66,25 +68,42 @@ body {
   padding: 0 24px !important;
 }
 
-/* ---- Profile Block ---- */
-.home-info {
-  display: flex !important;
-  align-items: center !important;
-  gap: 22px !important;
+/* ---- Profile / Home Info Block ---- */
+.first-entry.home-info {
   padding: 48px 0 52px !important;
   border: none !important;
   box-shadow: none !important;
   text-align: left !important;
 }
-.home-info .buttons { justify-content: flex-start !important; }
 
-.home-info .avatar img, .home-info img {
-  width: 72px !important;
-  height: 72px !important;
-  border-radius: 50% !important;
-  border: 3px solid var(--border-subtle) !important;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.10) !important;
-  object-fit: cover;
+/* Fix faded heading in home-info */
+.first-entry.home-info h1,
+.first-entry.home-info .entry-header h1 {
+  font-family: var(--font-heading) !important;
+  font-size: 1.7rem !important;
+  font-weight: 700 !important;
+  color: var(--text-primary) !important;
+  letter-spacing: -0.025em !important;
+  margin: 0 0 8px !important;
+}
+
+.first-entry.home-info .entry-content p {
+  font-size: 0.95rem !important;
+  color: var(--text-secondary) !important;
+  margin: 0 !important;
+  line-height: 1.6;
+}
+
+/* Social icons in home-info */
+.first-entry.home-info .entry-footer {
+  margin-top: 16px !important;
+}
+.first-entry.home-info .entry-footer a {
+  color: var(--text-secondary) !important;
+  transition: color 0.2s, transform 0.2s;
+}
+.first-entry.home-info .entry-footer a:hover {
+  color: var(--text-primary) !important;
 }
 
 /* ---- Post List ---- */
@@ -231,5 +250,5 @@ article.post-entry:last-of-type {
   .main { padding: 0 16px !important; }
   .post-title { font-size: 1.65rem !important; }
   .entry-header h2 { font-size: 1.15rem !important; }
-  .home-info { padding: 32px 0 36px !important; }
+  .first-entry.home-info { padding: 32px 0 36px !important; }
 }
