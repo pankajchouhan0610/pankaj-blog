@@ -1,0 +1,59 @@
+baseURL = "https://pankajchouhan.dev/"
+languageCode = "en-us"
+title = "Pankaj"
+theme = "PaperMod"
+
+[params]
+  author = "Pankaj Chouhan"
+  description = "Tech, thoughts, and everything in between"
+  ShowReadingTime = true
+  ShowPostNavLinks = true
+  ShowBreadCrumbs = true
+  ShowCodeCopyButtons = true
+  defaultTheme = "light"
+  disableThemeToggle = false
+  ShowShareButtons = false
+  ShowToc = true
+  TocOpen = false
+  comments = false
+
+  [params.homeInfoParams]
+  Title = "Pankaj Chouhan"
+  Content = "Tech, thoughts, and everything in between."
+
+  [params.profileMode]
+  enabled = false
+
+  [[params.socialIcons]]
+  name = "github"
+  url = "https://github.com/pankajchouhan0610"
+
+  [[params.socialIcons]]
+  name = "linkedin"
+  url = "https://linkedin.com/"
+
+  [[params.socialIcons]]
+  name = "rss"
+  url = "/index.xml"
+
+[menu]
+  [[menu.main]]
+  identifier = "about"
+  name = "About"
+  url = "/about/"
+  weight = 10
+  [[menu.main]]
+  identifier = "tags"
+  name = "Tags"
+  url = "/tags/"
+  weight = 20
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+    unsafe = true
+  [markup.highlight]
+  style = "monokai"
+  lineNos = true
+  lineNumbersInTable = true
+  noClasses = true
