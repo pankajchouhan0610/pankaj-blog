@@ -1,0 +1,8 @@
+# Hugo build output - never commit this
+public/
+# Hugo cache
+.hugo_build.lock
+resources/
+# OS files
+.DS_Store
+Thumbs.db
