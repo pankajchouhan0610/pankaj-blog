@@ -1,0 +1,5 @@
+{
+  "installCommand": "rm -rf themes/PaperMod && git clone https://github.com/adityatelange/hugo-PaperMod themes/PaperMod --depth=1",
+  "buildCommand": "hugo --gc --baseURL https://pankajchouhan.dev/",
+  "outputDirectory": "public"
+}
