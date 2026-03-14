@@ -1,0 +1,51 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+const { frontmatter } = Astro.props;
+const { title, description, date, tags = [] } = frontmatter;
+const formattedDate = new Date(date).toLocaleDateString('en-US', {
+  year: 'numeric', month: 'long', day: 'numeric'
+  });
+  ---
+  <BaseLayout title={title} description={description}>
+    <Nav />
+      <main>
+          <article>
+                <header>
+                        <div class="meta">
+                                  <time>{formattedDate}</time>
+                                            {tags.map(tag => <span class="tag">{tag}</span>)}
+                                                    </div>
+                                                            <h1>{title}</h1>
+                                                                    {description && <p class="description">{description}</p>}
+                                                                            <hr />
+                                                                                  </header>
+                                                                                        <div class="content">
+                                                                                                <slot />
+                                                                                                      </div>
+                                                                                                          </article>
+                                                                                                            </main>
+                                                                                                              <Footer />
+                                                                                                              </BaseLayout>
+                                                                                                              
+                                                                                                              <style>
+                                                                                                                main { max-width: 720px; margin: 0 auto; padding: 3rem 1.5rem; }
+                                                                                                                  header { margin-bottom: 2rem; }
+                                                                                                                    .meta { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap; }
+                                                                                                                      time { font-size: 0.875rem; color: var(--text-muted); }
+                                                                                                                        .tag { font-size: 0.75rem; background: var(--code-bg); border: 1px solid var(--border); color: var(--text-muted); padding: 2px 8px; border-radius: 99px; }
+                                                                                                                          h1 { font-size: 2rem; line-height: 1.25; margin-bottom: 0.75rem; font-weight: 800; }
+                                                                                                                            .description { color: var(--text-muted); font-size: 1.1rem; line-height: 1.6; }
+                                                                                                                              hr { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+                                                                                                                                .content { font-size: 1.05rem; }
+                                                                                                                                  .content h2 { font-size: 1.5rem; font-weight: 700; margin: 2.5rem 0 1rem; }
+                                                                                                                                    .content h3 { font-size: 1.2rem; font-weight: 700; margin: 2rem 0 0.75rem; }
+                                                                                                                                      .content p { margin-bottom: 1.25rem; }
+                                                                                                                                        .content ul, .content ol { margin: 0 0 1.25rem 1.5rem; }
+                                                                                                                                          .content li { margin-bottom: 0.4rem; }
+                                                                                                                                            .content blockquote { border-left: 3px solid var(--accent); padding: 0.5rem 0 0.5rem 1.25rem; margin: 1.5rem 0; color: var(--text-muted); font-style: italic; }
+                                                                                                                                              .content img { max-width: 100%; border-radius: 8px; border: 1px solid var(--border); margin: 1.5rem 0; }
+                                                                                                                                                .content a { color: var(--accent); }
+                                                                                                                                                </style>
