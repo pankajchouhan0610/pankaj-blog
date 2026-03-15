@@ -3,71 +3,55 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 
-const posts = await Astro.glob('../content/blogs/*.md');
-const sorted = posts.sort((a, b) =>
+const postFiles = import.meta.glob('../content/blogs/*.md', { eager: true });
+const sorted = Object.values(postFiles).sort((a, b) =>
   new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime()
-  );
-  ---
-  <BaseLayout title="Home">
-    <Nav />
-      <main>
-          <section class="hero">
-                <div class="avatar"></div>
-                      <div>
-                              <h1>Pankaj Chouhan</h1>
-                                      <p class="tagline">Engineer and writer. Writing about systems, web development, and things I find interesting.</p>
-                                              <div class="social-links">
-                                                        <a href="https://github.com/pankajchouhan0610" target="_blank">GitHub</a>
-                                                                  <a href="https://twitter.com/pankajchouhan0610" target="_blank">Twitter</a>
-                                                                            <a href="https://linkedin.com/in/pankajchouhan0610" target="_blank">LinkedIn</a>
-                                                                                      <a href="/rss.xml">RSS</a>
-                                                                                              </div>
-                                                                                                    </div>
-                                                                                                        </section>
-                                                                                                        
-                                                                                                            <section class="posts-section">
-                                                                                                                  <h2>Recent Writing</h2>
-                                                                                                                        <div class="post-list">
-                                                                                                                                {sorted.map(post => (
-                                                                                                                                          <a href={`/blogs/${post.frontmatter.slug}`} class="post-card">
-                                                                                                                                                      <span class="post-date">
-                                                                                                                                                                    {new Date(post.frontmatter.date).toLocaleDateString('en-US', {
-                                                                                                                                                                                    year: 'numeric', month: 'short', day: 'numeric'
-                                                                                                                                                                                                  })}
-                                                                                                                                                                                                              </span>
-                                                                                                                                                                                                                          <h3>{post.frontmatter.title}</h3>
-                                                                                                                                                                                                                                      <p>{post.frontmatter.description}</p>
-                                                                                                                                                                                                                                                  {post.frontmatter.tags && (
-                                                                                                                                                                                                                                                                <div class="tags">
-                                                                                                                                                                                                                                                                                {post.frontmatter.tags.map(tag => (
-                                                                                                                                                                                                                                                                                                  <span class="tag">{tag}</span>
-                                                                                                                                                                                                                                                                                                                  ))}
-                                                                                                                                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                                                                                                                                                            )}
-                                                                                                                                                                                                                                                                                                                                                      </a>
-                                                                                                                                                                                                                                                                                                                                                              ))}
-                                                                                                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                                                                                                        </section>
-                                                                                                                                                                                                                                                                                                                                                                          </main>
-                                                                                                                                                                                                                                                                                                                                                                            <Footer />
-                                                                                                                                                                                                                                                                                                                                                                            </BaseLayout>
-                                                                                                                                                                                                                                                                                                                                                                            
-                                                                                                                                                                                                                                                                                                                                                                            <style>
-                                                                                                                                                                                                                                                                                                                                                                              main { max-width: 720px; margin: 0 auto; padding: 3rem 1.5rem; }
-                                                                                                                                                                                                                                                                                                                                                                                .hero { display: flex; gap: 1.5rem; align-items: flex-start; padding-bottom: 3rem; border-bottom: 1px solid var(--border); margin-bottom: 3rem; }
-                                                                                                                                                                                                                                                                                                                                                                                  .avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #a855f7); flex-shrink: 0; }
-                                                                                                                                                                                                                                                                                                                                                                                    .hero h1 { font-size: 1.75rem; font-weight: 800; margin-bottom: 0.5rem; }
-                                                                                                                                                                                                                                                                                                                                                                                      .tagline { color: var(--text-muted); margin-bottom: 1rem; }
-                                                                                                                                                                                                                                                                                                                                                                                        .social-links { display: flex; gap: 0.75rem; flex-wrap: wrap; }
-                                                                                                                                                                                                                                                                                                                                                                                          .social-links a { font-size: 0.9rem; color: var(--text-muted); text-decoration: none; border: 1px solid var(--border); padding: 4px 12px; border-radius: 99px; transition: all 0.15s; }
-                                                                                                                                                                                                                                                                                                                                                                                            .social-links a:hover { color: var(--text); border-color: var(--text-muted); }
-                                                                                                                                                                                                                                                                                                                                                                                              .posts-section h2 { font-size: 1.1rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1.5rem; }
-                                                                                                                                                                                                                                                                                                                                                                                                .post-list { display: flex; flex-direction: column; }
-                                                                                                                                                                                                                                                                                                                                                                                                  .post-card { text-decoration: none; color: inherit; display: block; padding: 1.25rem; border-radius: 10px; border: 1px solid transparent; transition: all 0.15s; margin: 0 -1.25rem; }
-                                                                                                                                                                                                                                                                                                                                                                                                    .post-card:hover { background: var(--code-bg); border-color: var(--border); }
-                                                                                                                                                                                                                                                                                                                                                                                                      .post-date { font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 0.35rem; }
-                                                                                                                                                                                                                                                                                                                                                                                                        .post-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.35rem; }
-                                                                                                                                                                                                                                                                                                                                                                                                          .post-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; }
-                                                                                                                                                                                                                                                                                                                                                                                                            .tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.6rem; }
-                                                                                                                                                                                                                                                                                                                                                                                                              .tag { font-size: 0.72rem; background: var(--code-bg); border: 1px solid var(--border); color: var(--text-muted); padding: 2px 8px; border-radius: 99px; }
-                                                                                                                                                                                                                                                                                                                                                                                                              </style>
+);
+---
+<BaseLayout title="Home">
+  <Nav />
+  <main>
+    <section class="hero">
+      <div class="avatar"></div>
+      <div>
+        <h1>Pankaj Chouhan</h1>
+        <p class="tagline">Engineer and writer. Writing about systems, web development, and things I find interesting.</p>
+        <div class="social-links">
+          <a href="https://github.com/pankajchouhan0610" target="_blank">GitHub</a>
+          <a href="https://twitter.com/pankajchouhan0610" target="_blank">Twitter</a>
+          <a href="/rss.xml">RSS</a>
+        </div>
+      </div>
+    </section>
+    <section class="posts-section">
+      <h2>Recent Writing</h2>
+      <div class="post-list">
+        {sorted.map(post => (
+          <a href={`/blogs/${post.frontmatter.slug}`} class="post-card">
+            <span class="post-date">{new Date(post.frontmatter.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+            <h3>{post.frontmatter.title}</h3>
+            <p>{post.frontmatter.description}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  main { max-width: 720px; margin: 0 auto; padding: 3rem 1.5rem; }
+  .hero { display: flex; gap: 1.5rem; align-items: flex-start; padding-bottom: 3rem; border-bottom: 1px solid var(--border); margin-bottom: 3rem; }
+  .avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #a855f7); flex-shrink: 0; }
+  .hero h1 { font-size: 1.75rem; font-weight: 800; margin-bottom: 0.5rem; }
+  .tagline { color: var(--text-muted); margin-bottom: 1rem; }
+  .social-links { display: flex; gap: 0.75rem; }
+  .social-links a { font-size: 0.9rem; color: var(--text-muted); text-decoration: none; border: 1px solid var(--border); padding: 4px 12px; border-radius: 99px; }
+  .posts-section h2 { font-size: 1.1rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1.5rem; }
+  .post-list { display: flex; flex-direction: column; }
+  .post-card { text-decoration: none; color: inherit; display: block; padding: 1.25rem; border-radius: 10px; border: 1px solid transparent; transition: all 0.15s; margin: 0 -1.25rem; }
+  .post-card:hover { background: var(--code-bg); border-color: var(--border); }
+  .post-date { font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 0.35rem; }
+  .post-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.35rem; }
+  .post-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; }
+</style>
