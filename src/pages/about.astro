@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+<BaseLayout title="About">
+  <Nav />
+  <main>
+    <section class="about">
+      <h1>About</h1>
+      <p>Hi — I’m Pankaj. I build things, write about systems, and share what I learn along the way.</p>
+      <p>This site is built with Astro and a very small amount of Markdown-driven content.</p>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  main { max-width: 720px; margin: 0 auto; padding: 3rem 1.5rem; }
+  .about h1 { font-size: 2rem; margin-bottom: 1rem; }
+  .about p { margin-bottom: 1rem; line-height: 1.6; color: var(--text-muted); }
+</style>

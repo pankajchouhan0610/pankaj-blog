@@ -1,4 +1,4 @@
-—---
+---
 title: "How Databases Actually Work"
 slug: "how-databases-work"
 description: "A deep dive into what happens when you run a SQL query — from parsing to execution."

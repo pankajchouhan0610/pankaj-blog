@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+
+const postFiles = import.meta.glob('../../content/blogs/*.md', { eager: true });
+const sorted = Object.values(postFiles).sort((a, b) =>
+  new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime()
+);
+---
+
+<BaseLayout title="Blogs">
+  <Nav />
+  <main>
+    <section class="posts-section">
+      <h1>Blog</h1>
+      <p>All of my posts are listed here. Click a post to read more.</p>
+      <div class="post-list">
+        {sorted.map(post => (
+          <a href={`/blogs/${post.frontmatter.slug}`} class="post-card">
+            <span class="post-date">{new Date(post.frontmatter.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+            <h3>{post.frontmatter.title}</h3>
+            <p>{post.frontmatter.description}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  main { max-width: 720px; margin: 0 auto; padding: 3rem 1.5rem; }
+  .posts-section h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+  .posts-section p { margin-bottom: 2rem; color: var(--text-muted); }
+  .post-list { display: flex; flex-direction: column; }
+  .post-card { text-decoration: none; color: inherit; display: block; padding: 1.25rem; border-radius: 10px; border: 1px solid transparent; transition: all 0.15s; margin: 0 -1.25rem; }
+  .post-card:hover { background: var(--code-bg); border-color: var(--border); }
+  .post-date { font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 0.35rem; }
+  .post-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.35rem; }
+  .post-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; }
+</style>
