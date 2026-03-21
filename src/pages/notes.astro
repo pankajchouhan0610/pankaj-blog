@@ -1,0 +1,91 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+<BaseLayout title="Notes">
+  <Nav />
+  <main>
+    <section class="notes-section">
+      <h1>My Notes</h1>
+      <p>Handwritten notes and documents from my iPad.</p>
+      
+      <div class="notes-list">
+        <div class="note-item">
+          <h2>How Databases Work</h2>
+          <p>Detailed notes on database internals.</p>
+          <p class="note">PDF embedded below. You can also <a href="/notes/how-databases-work.pdf" download>download the PDF</a>.</p>
+          <iframe src="/notes/how-databases-work.pdf" class="pdf-embed"></iframe>
+        </div>
+        <!-- Add more note-items here as you add PDFs -->
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  main { max-width: 900px; margin: 0 auto; padding: 3rem 1.5rem; }
+  
+  .notes-section h1 { font-size: 2rem; margin-bottom: 1rem; }
+  .notes-section > p { color: var(--text-muted); margin-bottom: 2rem; }
+  
+  .notes-list { display: flex; flex-direction: column; gap: 2rem; }
+  
+  .note-item {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 2rem;
+    background: var(--code-bg);
+  }
+  
+  .note-item h2 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+  .note-item p { margin-bottom: 1rem; }
+  
+  .note {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+  
+  .note a {
+    color: var(--text);
+    text-decoration: underline;
+  }
+  
+  .note-content {
+    margin-top: 1rem;
+  }
+  
+  .note-content h3 {
+    font-size: 1.2rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .note-content h4 {
+    font-size: 1.1rem;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .note-content ul, .note-content ol {
+    margin-left: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .note-content li {
+    margin-bottom: 0.25rem;
+  }
+  
+  .note-content code {
+    background: var(--code-bg);
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    font-family: monospace;
+  }
+  
+  .note-content p {
+    margin-bottom: 1rem;
+  }
+</style>

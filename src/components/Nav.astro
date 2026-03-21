@@ -1,6 +1,7 @@
 ---
-  const navLinks = [
-{ href: '/blogs', label: 'Blogs' },
+const navLinks = [
+  { href: '/blogs', label: 'Blogs' },
+  { href: '/notes', label: 'Notes' },
   { href: '/about', label: 'About' },
 ];
 const pathname = Astro.url.pathname;
@@ -9,9 +10,9 @@ const pathname = Astro.url.pathname;
   <div class="nav-inner">
     <a href="/" class="logo">Pankaj Chouhan</a>
     <div class="nav-links">
-{navLinks.map(link => (
+      {navLinks.map(link => (
         <a href={link.href} class={pathname.startsWith(link.href) ? 'active' : ''}>
-{link.label}
+          {link.label}
         </a>
       ))}
       <button id="theme-toggle" aria-label="Toggle dark mode">🌙</button>

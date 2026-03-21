@@ -1,0 +1,47 @@
+{
+  "frontMatter.framework.id": "astro",
+  "frontMatter.content.pageFolders": [
+    {
+      "title": "src/content/blogs",
+      "path": "[[workspace]]/src/content/blogs",
+      "contentTypes": [
+        {
+          "name": "default",
+          "fields": [
+            {
+              "name": "title",
+              "type": "string",
+              "title": "Title"
+            },
+            {
+              "name": "description",
+              "type": "string",
+              "title": "Description"
+            },
+            {
+              "name": "date",
+              "type": "datetime",
+              "title": "Date",
+              "default": "{{now}}"
+            },
+            {
+              "name": "tags",
+              "type": "tags",
+              "title": "Tags"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "frontMatter.preview.host": "http://localhost:4321",
+  "frontMatter.content.publicFolder": {
+    "path": "public"
+  },
+  "frontMatter.taxonomy.contentTypes": [
+    {
+      "name": "blogs",
+      "field": "tags"
+    }
+  ]
+}

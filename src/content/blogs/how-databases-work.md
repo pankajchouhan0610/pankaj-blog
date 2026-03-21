@@ -49,6 +49,10 @@ Databases guarantee ACID properties:
 - **Isolation** — concurrent transactions don't interfere with each other
 - **Durability** — committed transactions survive crashes
 
+## My Handwritten Notes
+
+For detailed handwritten notes on this topic, check out my [Notes page](/notes).
+
 Understanding these properties is essential for building reliable systems.
 
 ## Conclusion

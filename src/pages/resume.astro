@@ -1,0 +1,82 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+const profileSrc = import.meta.env.SITE
+  ? new URL('/profile.png', import.meta.env.SITE).href
+  : '/profile.png';
+---
+<BaseLayout title="Resume">
+  <Nav />
+  <main>
+    <section class="resume-section">
+      <div class="header">
+        <img src={profileSrc} alt="Pankaj Chouhan" class="profile-pic" />
+        <div>
+          <h1>Pankaj Chouhan</h1>
+          <p>Engineer and writer. Passionate about systems and web development.</p>
+        </div>
+      </div>
+      
+      <div class="pdf-viewer">
+        <h2>My Resume</h2>
+        <p class="note">PDF embedded below. You can also <a href="/resume.pdf" download>download the PDF</a>.</p>
+        <iframe src="/resume.pdf" class="pdf-embed"></iframe>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  main { max-width: 900px; margin: 0 auto; padding: 3rem 1.5rem; }
+  
+  .resume-section h2 { font-size: 1.3rem; margin-bottom: 1rem; }
+  
+  .header {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    padding: 2rem;
+    background: var(--code-bg);
+    border-radius: 10px;
+    margin-bottom: 2rem;
+  }
+
+  .profile-pic {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .header h1 { font-size: 1.75rem; margin-bottom: 0.25rem; }
+  .header p { color: var(--text-muted); }
+
+  .pdf-viewer {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 2rem;
+    background: var(--code-bg);
+  }
+
+  .note {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .note a {
+    color: var(--text);
+    text-decoration: underline;
+  }
+
+  .pdf-embed {
+    width: 100%;
+    height: 800px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+</style>
