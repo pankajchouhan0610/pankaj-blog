@@ -1,0 +1,200 @@
+---
+title: "File System Design Notes"
+slug: "file-system-design-notes"
+description: "Notes on designing an in-memory file system supporting mkdir, cd, and pwd operations."
+date: "2026-03-21"
+tags: ["systems", "low level design", "filesystem"]
+---
+
+Designing a file system from scratch is a fascinating exercise in system design. Whether for an interview or building a real system, understanding the core components and trade-offs is crucial. Let's break down how to design an in-memory file system that supports basic shell commands.
+
+> **TL;DR** — Model directories as a **tree**, keep a **current directory pointer** for relative paths, and **resolve paths** segment-by-segment (handling `.`, `..`, and `/`). Expose `mkdir`, `cd`, and `pwd` on a small orchestrator class.
+
+**In this note:**
+
+* Requirements and supported operations
+* Core pieces: directory nodes, file-system class, cwd pointer
+* Why a tree beats a flat map for this problem
+* Path resolution and `mkdir -p`-style creation
+* Complexity, then extensions (concurrency, scale, persistence)
+
+___
+
+## The Design Framework
+
+A systematic approach to system design:
+
+1. Clarify the requirements
+2. Identify core components
+3. Design interactions
+4. Define classes and methods
+
+## Requirements Clarification
+
+We need to design an **in-memory file system** that supports:
+
+* `mkdir` — create directories
+* `cd` — change directory
+* `pwd` — print working directory
+
+A compact view of the public API (names vary by language; the idea is the same):
+
+```ts
+// Conceptual API — in-memory, directory-only
+mkdir(path: string): void;   // create path; create parents if missing ("-p" style)
+cd(path: string): void;      // change cwd using absolute or relative path
+pwd(): string;               // absolute path of cwd, e.g. "/a/b"
+```
+
+Key considerations:
+
+* Only directories for now (no files)
+* Support both absolute (`/a/b`) and relative (`a/b`) paths
+* Handle special symbols like `.` (current) and `..` (parent)
+* Auto-create parent directories during `mkdir` if they don't exist
+
+> **Interview tip** — State assumptions early: single-threaded vs concurrent, ASCII names vs Unicode, whether `mkdir` on an existing path errors or is idempotent.
+
+## Core Components
+
+### Directory Node
+
+Each directory is represented as a node in a tree structure:
+
+* **Purpose**: Represents a folder that can contain subfolders
+* **Structure**: Each node has one parent and multiple children
+* **Why a tree?** File system relationships are naturally hierarchical
+
+Rough shape of a node (pseudocode):
+
+```ts
+class Directory {
+  name: string;
+  parent: Directory | null;           // null for root
+  children: Map<string, Directory>;    // child name -> node
+}
+```
+
+### File System Class
+
+The main orchestrator that manages the entire system:
+
+* **State**: Tracks the current working directory
+* **Operations**: Exposes `mkdir`, `cd`, and `pwd` methods
+* **Separation of concerns**: Structure (Directory) vs. behavior (FileSystem)
+
+```ts
+class FileSystem {
+  private root: Directory;
+  private cwd: Directory;
+
+  mkdir(path: string): void { /* ... */ }
+  cd(path: string): void { /* ... */ }
+  pwd(): string { /* walk parent chain or maintain path string */ }
+}
+```
+
+## Why a Tree Structure?
+
+File systems have hierarchical relationships that map perfectly to trees:
+
+* Each directory has exactly one parent
+* Can have multiple children
+* No cycles (unlike graphs)
+
+Using a flat map or list would make path traversal inefficient and lose the parent-child relationships that are fundamental to file systems.
+
+> A **tree + cwd** gives you natural relative navigation; a lone `Map<fullPath, Node>` makes `..` and partial updates harder unless you duplicate hierarchy logic elsewhere.
+
+Example layout (text diagram):
+
+```text
+        /  (root)
+        ├── a
+        │   └── b
+        └── x
+```
+
+## The Current Directory Pointer
+
+A crucial component for relative path operations:
+
+* **Needed for**: `cd` with relative paths like `../folder`
+* **Without it**: Every operation would require full absolute paths from root
+* **Tracks**: The user's current position in the tree
+
+## Handling Edge Cases
+
+### Path Resolution
+
+* **Absolute paths**: Start from root (`/`)
+* **Relative paths**: Start from current directory
+* **Special cases**: `.` (current), `..` (parent), empty paths
+
+Splitting and walking is usually enough:
+
+```ts
+// e.g. "/a/../a/b" → ["", "a", "..", "a", "b"] after split — skip empty, apply .. carefully
+function resolve(current: Directory, segments: string[]): Directory { /* ... */ }
+```
+
+### Directory Creation
+
+* **Recursive creation**: `mkdir -p` behavior
+* **Path validation**: Ensure valid directory names
+* **Existence checks**: Handle existing directories gracefully
+
+## Advanced Considerations
+
+### Why Not a HashMap?
+
+While HashMaps offer fast lookups, they have drawbacks:
+
+* **Pros**: O(1) access to any directory
+* **Cons**: Complex path traversal, loss of hierarchical relationships
+
+### Concurrency
+
+For multi-user systems:
+
+* **Thread safety**: Synchronize access to the tree
+* **Locking strategies**: Directory-level vs. file-level locks
+* **Deadlock prevention**: Careful ordering of lock acquisition
+
+### Scaling for Large Directories
+
+When directories contain thousands of subdirectories:
+
+* **Trie-like structures**: Prefix-based organization
+* **B-Trees**: Sorted access for range queries
+* **Sharding**: Distribute across multiple nodes
+
+### Persistence
+
+Moving from memory to disk:
+
+* **Serialization**: Convert the tree to bytes
+* **Storage options**: Flat files, databases, key-value stores
+* **Metadata**: Store path-to-node mappings
+
+## Time Complexity Analysis
+
+| Operation | Typical cost | Notes |
+| :-- | :-- | :-- |
+| `mkdir` | O(*L*) + O(1) | *L* = number of path segments; traverse/create along the path |
+| `cd` | O(*L*) | Traverse from root or cwd depending on absolute vs relative |
+| `pwd` | O(*D*) | *D* = depth; rebuild path by walking `parent` to root |
+
+**Optimization**: Path caching can reduce repeated work to near O(1) for hot directories.
+
+## My Handwritten Notes
+
+For detailed handwritten notes on this topic, check out my [Notes page](/notes).
+
+## Conclusion
+
+File system design teaches us about hierarchical data structures, path resolution algorithms, and the trade-offs between simplicity and performance. These concepts apply far beyond file systems to any tree-based data model in software engineering.
+
+> **Closing thought** — If you can explain **tree + cwd + path resolution** clearly, you have the core of this interview problem; everything else is follow-up depth.
+
+Understanding these fundamentals will help you design better systems and ace those system design interviews.

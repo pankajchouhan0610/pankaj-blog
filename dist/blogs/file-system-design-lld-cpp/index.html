@@ -1,0 +1,480 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v5.18.1"><meta name="description" content="Step-by-step Low Level Design of a File System supporting mkdir, cd, and pwd in C++. Beginner friendly, SDE-2 interview style."><title>LLD Interview: File System Design (mkdir, cd, pwd) in C++ | Pankaj Chouhan</title><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="alternate" type="application/rss+xml" title="Pankaj's Blog" href="/rss.xml"><style>:root{--bg: #ffffff;--text: #1a1a1a;--text-muted: #666;--border: #e5e5e5;--accent: #2563eb;--code-bg: #f4f4f5;--nav-bg: rgba(255,255,255,.85)}[data-theme=dark]{--bg: #0f0f0f;--text: #e8e8e8;--text-muted: #999;--border: #2a2a2a;--accent: #60a5fa;--code-bg: #1a1a1a;--nav-bg: rgba(15,15,15,.85)}*{box-sizing:border-box;margin:0;padding:0}html{font-size:16px;scroll-behavior:smooth}body{background:var(--bg);color:var(--text);font-family:Montserrat,system-ui,-apple-system,sans-serif;line-height:1.7;transition:background .2s,color .2s}a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}code{font-family:Fira Code,Cascadia Code,monospace;font-size:.9em;background:var(--code-bg);padding:2px 6px;border-radius:4px}pre{background:var(--code-bg)!important;padding:1.5rem;border-radius:8px;overflow-x:auto;border:1px solid var(--border);margin:1.5rem 0}pre code{background:none;padding:0}nav[data-astro-cid-dmqpwcec]{position:sticky;top:0;z-index:100;background:var(--nav-bg);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}.nav-inner[data-astro-cid-dmqpwcec]{max-width:720px;margin:0 auto;padding:1rem 1.5rem;display:flex;justify-content:space-between;align-items:center}.logo[data-astro-cid-dmqpwcec]{font-weight:700;font-size:1.1rem;color:var(--text);text-decoration:none}.nav-links[data-astro-cid-dmqpwcec]{display:flex;gap:1.5rem;align-items:center}.nav-links[data-astro-cid-dmqpwcec] a[data-astro-cid-dmqpwcec]{color:var(--text-muted);font-size:.95rem;text-decoration:none;transition:color .15s}.nav-links[data-astro-cid-dmqpwcec] a[data-astro-cid-dmqpwcec]:hover,.nav-links[data-astro-cid-dmqpwcec] a[data-astro-cid-dmqpwcec].active{color:var(--text)}#theme-toggle[data-astro-cid-dmqpwcec]{background:none;border:none;cursor:pointer;font-size:1.1rem;padding:2px 6px;border-radius:6px;transition:background .15s}#theme-toggle[data-astro-cid-dmqpwcec]:hover{background:var(--border)}footer[data-astro-cid-sz7xmlte]{border-top:1px solid var(--border);margin-top:4rem;padding:3rem 1.5rem}.footer-inner[data-astro-cid-sz7xmlte]{max-width:720px;margin:0 auto}.footer-links[data-astro-cid-sz7xmlte]{display:flex;gap:4rem;margin-bottom:2rem}.footer-links[data-astro-cid-sz7xmlte] div[data-astro-cid-sz7xmlte]{display:flex;flex-direction:column;gap:.5rem}.footer-links[data-astro-cid-sz7xmlte] strong[data-astro-cid-sz7xmlte]{font-size:.85rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:.25rem}.footer-links[data-astro-cid-sz7xmlte] a[data-astro-cid-sz7xmlte]{color:var(--text-muted);font-size:.9rem;text-decoration:none}.footer-links[data-astro-cid-sz7xmlte] a[data-astro-cid-sz7xmlte]:hover{color:var(--text)}.copy[data-astro-cid-sz7xmlte]{font-size:.85rem;color:var(--text-muted)}
+</style>
+<link rel="stylesheet" href="/_astro/_slug_.BnBgOwkg.css"></head> <body>  <nav data-astro-cid-dmqpwcec> <div class="nav-inner" data-astro-cid-dmqpwcec> <a href="/" class="logo" data-astro-cid-dmqpwcec>Pankaj Chouhan</a> <div class="nav-links" data-astro-cid-dmqpwcec> <a href="/blogs" class="active" data-astro-cid-dmqpwcec> Blogs </a><a href="/notes" class data-astro-cid-dmqpwcec> Notes </a><a href="/about" class data-astro-cid-dmqpwcec> About </a> <button id="theme-toggle" aria-label="Toggle dark mode" data-astro-cid-dmqpwcec>🌙</button> </div> </div> </nav> <script type="module">const e=document.getElementById("theme-toggle"),n=document.documentElement,a=localStorage.getItem("theme")||"light";n.setAttribute("data-theme",a);e.textContent=a==="dark"?"☀️":"🌙";e.addEventListener("click",()=>{const t=n.getAttribute("data-theme")==="dark"?"light":"dark";n.setAttribute("data-theme",t),localStorage.setItem("theme",t),e.textContent=t==="dark"?"☀️":"🌙"});</script>  <main data-astro-cid-4dqtj3le> <article data-astro-cid-4dqtj3le> <header class="article-header" data-astro-cid-4dqtj3le> <div class="meta" data-astro-cid-4dqtj3le> <time data-astro-cid-4dqtj3le>March 21, 2026</time> <span class="tag" data-astro-cid-4dqtj3le>lld</span><span class="tag" data-astro-cid-4dqtj3le>system-design</span><span class="tag" data-astro-cid-4dqtj3le>cpp</span><span class="tag" data-astro-cid-4dqtj3le>interview</span><span class="tag" data-astro-cid-4dqtj3le>sde2</span> </div> <h1 data-astro-cid-4dqtj3le>LLD Interview: File System Design (mkdir, cd, pwd) in C++</h1> <p class="description" data-astro-cid-4dqtj3le>Step-by-step Low Level Design of a File System supporting mkdir, cd, and pwd in C++. Beginner friendly, SDE-2 interview style.</p> </header> <div class="content" data-astro-cid-4dqtj3le>  <h2 id="problem-in-simple-words">Problem in Simple Words</h2>
+<p>Think of it like <strong>Windows File Explorer</strong> or a <strong>Linux terminal</strong> only.</p>
+<ul>
+<li>You start from <strong>root folder</strong> (<code>/</code>)</li>
+<li>You can <strong>create folders</strong>, <strong>go inside them</strong>, and <strong>print where you are sitting right now</strong></li>
+</ul>
+<hr>
+<h2 id="step-1--requirements">Step 1 — Requirements</h2>
+<h3 id="functional-what-it-should-do">Functional (what it should do)</h3>
+<ul>
+<li>Create new directory → <code>mkdir photos</code></li>
+<li>Move inside a directory → <code>cd photos</code></li>
+<li>Move back → <code>cd ..</code></li>
+<li>Jump to any path → <code>cd /home/user/photos</code></li>
+<li>Print current path → <code>pwd</code></li>
+</ul>
+<h3 id="non-functional-how-it-should-behave">Non-Functional (how it should behave)</h3>
+<ul>
+<li>Lookup of folders should be fast</li>
+<li>Same name folder should not repeat in one place (no duplicates)</li>
+<li>On wrong path it should not crash</li>
+</ul>
+<hr>
+<h2 id="step-2--core-objects">Step 2 — Core Objects</h2>
+<p>Everything in this system is a <strong>Directory</strong> only — and we are forming a <strong>tree structure</strong> like this:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="plaintext"><code><span class="line"><span>/                         ← root</span></span>
+<span class="line"><span>├── home</span></span>
+<span class="line"><span>│   └── user</span></span>
+<span class="line"><span>│       └── photos</span></span>
+<span class="line"><span>└── etc</span></span></code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Object</th><th>What it represents</th></tr></thead><tbody><tr><td><code>Directory</code></td><td>One single folder in the tree</td></tr><tr><td><code>FileSystem</code></td><td>Whole system — holds root and tracks where you are</td></tr></tbody></table>
+<p>Just <strong>2 classes.</strong> Simple only.</p>
+<hr>
+<h2 id="step-3--class-design">Step 3 — Class Design</h2>
+<h3 id="directory-class">Directory Class</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Variable</th><th>Type</th><th>Why needed</th></tr></thead><tbody><tr><td><code>name</code></td><td><code>string</code></td><td>To identify the folder</td></tr><tr><td><code>parent</code></td><td><code>Directory*</code></td><td>For going back with <code>cd ..</code></td></tr><tr><td><code>children</code></td><td><code>map&#x3C;string, Directory*></code></td><td>To find folders inside (fast lookup)</td></tr></tbody></table>
+<h3 id="filesystem-class">FileSystem Class</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Variable</th><th>Type</th><th>Why needed</th></tr></thead><tbody><tr><td><code>root</code></td><td><code>Directory*</code></td><td>Points to <code>/</code> (starting point)</td></tr><tr><td><code>current</code></td><td><code>Directory*</code></td><td>Points where you are right now</td></tr></tbody></table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Method</th><th>What it does</th></tr></thead><tbody><tr><td><code>mkdir(name)</code></td><td>Creates new folder inside <code>current</code></td></tr><tr><td><code>cd(path)</code></td><td>Changes <code>current</code> pointer</td></tr><tr><td><code>pwd()</code></td><td>Prints path from <code>root</code> till <code>current</code></td></tr></tbody></table>
+<hr>
+<h2 id="step-4--relationships">Step 4 — Relationships</h2>
+<ul>
+<li><strong>Directory has parent</strong> (composition) → <code>Directory* parent</code></li>
+<li><strong>Directory has children map</strong> (composition) → <code>map&#x3C;string, Directory*></code></li>
+<li><strong>FileSystem has root and current</strong> (composition)</li>
+<li><strong>FileSystem uses Directory</strong> (association)</li>
+</ul>
+<p>This is classic <strong>tree data structure</strong> where each node is pointing to parent and children both.</p>
+<hr>
+<h2 id="step-5--logic-explained-simply">Step 5 — Logic Explained Simply</h2>
+<h3 id="mkdir-logic">mkdir logic</h3>
+<ol>
+<li>Check if folder already exists in <code>current</code> — if yes then print error</li>
+<li>Create new <code>Directory</code> object with name and <code>current</code> as parent</li>
+<li>Add it in <code>current->children</code> map</li>
+</ol>
+<h3 id="pwd-logic">pwd logic</h3>
+<ul>
+<li>Travel from <code>current</code> to parent to parent … till root</li>
+<li>It is like <strong>linked list traversal</strong> only</li>
+<li>Push each name in <strong>stack</strong> (so that order can reverse)</li>
+<li>Pop one by one and build path string</li>
+</ul>
+<h3 id="cd-logic--3-cases">cd logic — 3 cases</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Case</th><th>Input</th><th>Action</th></tr></thead><tbody><tr><td>Case 1</td><td><code>cd photos</code></td><td>Move <code>current</code> to child named <code>photos</code></td></tr><tr><td>Case 2</td><td><code>cd ..</code></td><td>Move <code>current</code> to <code>current->parent</code></td></tr><tr><td>Case 3</td><td><code>cd /home/user/photos</code></td><td>Start from root, split path by <code>/</code>, walk down</td></tr></tbody></table>
+<hr>
+<h2 id="step-6--full-c-code">Step 6 — Full C++ Code</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="cpp"><code><span class="line"><span style="color:#F97583">#include</span><span style="color:#9ECBFF"> &#x3C;iostream></span></span>
+<span class="line"><span style="color:#F97583">#include</span><span style="color:#9ECBFF"> &#x3C;map></span></span>
+<span class="line"><span style="color:#F97583">#include</span><span style="color:#9ECBFF"> &#x3C;stack></span></span>
+<span class="line"><span style="color:#F97583">#include</span><span style="color:#9ECBFF"> &#x3C;sstream></span></span>
+<span class="line"><span style="color:#F97583">using</span><span style="color:#F97583"> namespace</span><span style="color:#B392F0"> std</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">// ─────────────────────────────</span></span>
+<span class="line"><span style="color:#6A737D">// Directory Class</span></span>
+<span class="line"><span style="color:#6A737D">// ─────────────────────────────</span></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#B392F0"> Directory</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">public:</span></span>
+<span class="line"><span style="color:#E1E4E8">    string name;</span></span>
+<span class="line"><span style="color:#E1E4E8">    Directory</span><span style="color:#F97583">*</span><span style="color:#E1E4E8"> parent;</span></span>
+<span class="line"><span style="color:#E1E4E8">    map</span><span style="color:#F97583">&#x3C;</span><span style="color:#E1E4E8">string, Directory</span><span style="color:#F97583">*></span><span style="color:#E1E4E8"> children;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">    Directory</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">string</span><span style="color:#FFAB70"> name</span><span style="color:#E1E4E8">, </span><span style="color:#B392F0">Directory</span><span style="color:#F97583">*</span><span style="color:#FFAB70"> parent</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#79B8FF">        this</span><span style="color:#E1E4E8">->name </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> name;</span></span>
+<span class="line"><span style="color:#79B8FF">        this</span><span style="color:#E1E4E8">->parent </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> parent;</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8">};</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">// ─────────────────────────────</span></span>
+<span class="line"><span style="color:#6A737D">// FileSystem Class</span></span>
+<span class="line"><span style="color:#6A737D">// ─────────────────────────────</span></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#B392F0"> FileSystem</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">private:</span></span>
+<span class="line"><span style="color:#E1E4E8">    Directory</span><span style="color:#F97583">*</span><span style="color:#E1E4E8"> root;</span></span>
+<span class="line"><span style="color:#E1E4E8">    Directory</span><span style="color:#F97583">*</span><span style="color:#E1E4E8"> current;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">public:</span></span>
+<span class="line"><span style="color:#6A737D">    // constructor — creates root "/"</span></span>
+<span class="line"><span style="color:#B392F0">    FileSystem</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#79B8FF">        this</span><span style="color:#E1E4E8">->root </span><span style="color:#F97583">=</span><span style="color:#F97583"> new</span><span style="color:#B392F0"> Directory</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"/"</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">nullptr</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#79B8FF">        this</span><span style="color:#E1E4E8">->current </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> root;</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">    // create new folder inside current</span></span>
+<span class="line"><span style="color:#F97583">    void</span><span style="color:#B392F0"> mkdir</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">string</span><span style="color:#FFAB70"> name</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8"> (current->children.</span><span style="color:#B392F0">count</span><span style="color:#E1E4E8">(name)) {</span></span>
+<span class="line"><span style="color:#E1E4E8">            cout </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#9ECBFF"> "Error: Directory already exists!"</span><span style="color:#F97583"> &#x3C;&#x3C;</span><span style="color:#E1E4E8"> endl;</span></span>
+<span class="line"><span style="color:#F97583">            return</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8">        Directory</span><span style="color:#F97583">*</span><span style="color:#E1E4E8"> newDir </span><span style="color:#F97583">=</span><span style="color:#F97583"> new</span><span style="color:#B392F0"> Directory</span><span style="color:#E1E4E8">(name, current);</span></span>
+<span class="line"><span style="color:#E1E4E8">        current->children[name] </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> newDir;</span></span>
+<span class="line"><span style="color:#E1E4E8">        cout </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#9ECBFF"> "Directory '"</span><span style="color:#F97583"> &#x3C;&#x3C;</span><span style="color:#E1E4E8"> name </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#9ECBFF"> "' created!"</span><span style="color:#F97583"> &#x3C;&#x3C;</span><span style="color:#E1E4E8"> endl;</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">    // move to folder</span></span>
+<span class="line"><span style="color:#F97583">    void</span><span style="color:#B392F0"> cd</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">string</span><span style="color:#FFAB70"> path</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#6A737D">        // Case 2: go back</span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8"> (path </span><span style="color:#F97583">==</span><span style="color:#9ECBFF"> ".."</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">            if</span><span style="color:#E1E4E8"> (current->parent </span><span style="color:#F97583">==</span><span style="color:#79B8FF"> nullptr</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">                cout </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#9ECBFF"> "Error: Already at root!"</span><span style="color:#F97583"> &#x3C;&#x3C;</span><span style="color:#E1E4E8"> endl;</span></span>
+<span class="line"><span style="color:#E1E4E8">            } </span><span style="color:#F97583">else</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">                current </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> current->parent;</span></span>
+<span class="line"><span style="color:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#6A737D">        // Case 3: full absolute path</span></span>
+<span class="line"><span style="color:#F97583">        else</span><span style="color:#F97583"> if</span><span style="color:#E1E4E8"> (path[</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">] </span><span style="color:#F97583">==</span><span style="color:#9ECBFF"> '/'</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">            Directory</span><span style="color:#F97583">*</span><span style="color:#E1E4E8"> temp </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> root;</span></span>
+<span class="line"><span style="color:#E1E4E8">            stringstream </span><span style="color:#B392F0">ss</span><span style="color:#E1E4E8">(path);</span></span>
+<span class="line"><span style="color:#E1E4E8">            string part;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">            while</span><span style="color:#E1E4E8"> (</span><span style="color:#B392F0">getline</span><span style="color:#E1E4E8">(ss, part, </span><span style="color:#9ECBFF">'/'</span><span style="color:#E1E4E8">)) {</span></span>
+<span class="line"><span style="color:#F97583">                if</span><span style="color:#E1E4E8"> (part.</span><span style="color:#B392F0">empty</span><span style="color:#E1E4E8">()) </span><span style="color:#F97583">continue</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">                if</span><span style="color:#E1E4E8"> (temp->children.</span><span style="color:#B392F0">count</span><span style="color:#E1E4E8">(part)) {</span></span>
+<span class="line"><span style="color:#E1E4E8">                    temp </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> temp->children[part];</span></span>
+<span class="line"><span style="color:#E1E4E8">                } </span><span style="color:#F97583">else</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">                    cout </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#9ECBFF"> "Error: Path not found!"</span><span style="color:#F97583"> &#x3C;&#x3C;</span><span style="color:#E1E4E8"> endl;</span></span>
+<span class="line"><span style="color:#F97583">                    return</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">                }</span></span>
+<span class="line"><span style="color:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#E1E4E8">            current </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> temp;</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#6A737D">        // Case 1: go into child</span></span>
+<span class="line"><span style="color:#F97583">        else</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">            if</span><span style="color:#E1E4E8"> (current->children.</span><span style="color:#B392F0">count</span><span style="color:#E1E4E8">(path)) {</span></span>
+<span class="line"><span style="color:#E1E4E8">                current </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> current->children[path];</span></span>
+<span class="line"><span style="color:#E1E4E8">            } </span><span style="color:#F97583">else</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">                cout </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#9ECBFF"> "Error: Directory not found!"</span><span style="color:#F97583"> &#x3C;&#x3C;</span><span style="color:#E1E4E8"> endl;</span></span>
+<span class="line"><span style="color:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">    // print current path</span></span>
+<span class="line"><span style="color:#B392F0">    string</span><span style="color:#B392F0"> pwd</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">        stack</span><span style="color:#F97583">&#x3C;</span><span style="color:#E1E4E8">string</span><span style="color:#F97583">></span><span style="color:#E1E4E8"> st;</span></span>
+<span class="line"><span style="color:#E1E4E8">        Directory</span><span style="color:#F97583">*</span><span style="color:#E1E4E8"> temp </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> current;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">        // push all names going up to root</span></span>
+<span class="line"><span style="color:#F97583">        while</span><span style="color:#E1E4E8"> (temp </span><span style="color:#F97583">!=</span><span style="color:#79B8FF"> nullptr</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">            st.</span><span style="color:#B392F0">push</span><span style="color:#E1E4E8">(temp->name);</span></span>
+<span class="line"><span style="color:#E1E4E8">            temp </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> temp->parent;</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">        // pop and build path</span></span>
+<span class="line"><span style="color:#E1E4E8">        string path </span><span style="color:#F97583">=</span><span style="color:#9ECBFF"> ""</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">        while</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">!</span><span style="color:#E1E4E8">st.</span><span style="color:#B392F0">empty</span><span style="color:#E1E4E8">()) {</span></span>
+<span class="line"><span style="color:#E1E4E8">            string folder </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> st.</span><span style="color:#B392F0">top</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">            st.</span><span style="color:#B392F0">pop</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#F97583">            if</span><span style="color:#E1E4E8"> (folder </span><span style="color:#F97583">==</span><span style="color:#9ECBFF"> "/"</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">                path </span><span style="color:#F97583">+=</span><span style="color:#9ECBFF"> "/"</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">            } </span><span style="color:#F97583">else</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">                path </span><span style="color:#F97583">+=</span><span style="color:#E1E4E8"> folder </span><span style="color:#F97583">+</span><span style="color:#9ECBFF"> "/"</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#F97583">        return</span><span style="color:#E1E4E8"> path;</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8">};</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">// ─────────────────────────────</span></span>
+<span class="line"><span style="color:#6A737D">// Main — Test it</span></span>
+<span class="line"><span style="color:#6A737D">// ─────────────────────────────</span></span>
+<span class="line"><span style="color:#F97583">int</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">    FileSystem fs;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">    cout </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#E1E4E8"> fs.</span><span style="color:#B392F0">pwd</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#E1E4E8"> endl;</span><span style="color:#6A737D">       // /</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">    fs.</span><span style="color:#B392F0">mkdir</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"home"</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">    fs.</span><span style="color:#B392F0">cd</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"home"</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">    cout </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#E1E4E8"> fs.</span><span style="color:#B392F0">pwd</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#E1E4E8"> endl;</span><span style="color:#6A737D">       // /home/</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">    fs.</span><span style="color:#B392F0">mkdir</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"user"</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">    fs.</span><span style="color:#B392F0">cd</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"user"</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">    cout </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#E1E4E8"> fs.</span><span style="color:#B392F0">pwd</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#E1E4E8"> endl;</span><span style="color:#6A737D">       // /home/user/</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">    fs.</span><span style="color:#B392F0">mkdir</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"photos"</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">    fs.</span><span style="color:#B392F0">cd</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"photos"</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">    cout </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#E1E4E8"> fs.</span><span style="color:#B392F0">pwd</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#E1E4E8"> endl;</span><span style="color:#6A737D">       // /home/user/photos/</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">    fs.</span><span style="color:#B392F0">cd</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">".."</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">    cout </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#E1E4E8"> fs.</span><span style="color:#B392F0">pwd</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#E1E4E8"> endl;</span><span style="color:#6A737D">       // /home/user/</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">    fs.</span><span style="color:#B392F0">cd</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"/home/user/photos"</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">    cout </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#E1E4E8"> fs.</span><span style="color:#B392F0">pwd</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#E1E4E8"> endl;</span><span style="color:#6A737D">       // /home/user/photos/</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">    fs.</span><span style="color:#B392F0">mkdir</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"home"</span><span style="color:#E1E4E8">);</span><span style="color:#6A737D">               // Error: already exists</span></span>
+<span class="line"><span style="color:#E1E4E8">    fs.</span><span style="color:#B392F0">cd</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"unknown"</span><span style="color:#E1E4E8">);</span><span style="color:#6A737D">               // Error: not found</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<hr>
+<h2 id="step-7--example-walkthrough">Step 7 — Example Walkthrough</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="plaintext"><code><span class="line"><span>FileSystem starts → current = "/"</span></span>
+<span class="line"><span>pwd()  →  "/"</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>mkdir("home")    → creates home inside /</span></span>
+<span class="line"><span>cd("home")       → current = home</span></span>
+<span class="line"><span>pwd()            → "/home/"</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>mkdir("user")    → creates user inside home</span></span>
+<span class="line"><span>cd("user")       → current = user</span></span>
+<span class="line"><span>pwd()            → "/home/user/"</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>mkdir("photos")  → creates photos inside user</span></span>
+<span class="line"><span>cd("photos")     → current = photos</span></span>
+<span class="line"><span>pwd()            → "/home/user/photos/"</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>cd("..")         → current = user</span></span>
+<span class="line"><span>pwd()            → "/home/user/"</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>cd("/home/user/photos")  → start from root, walk down</span></span>
+<span class="line"><span>pwd()            → "/home/user/photos/"</span></span></code></pre>
+<hr>
+<h2 id="step-8--edge-cases">Step 8 — Edge Cases</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Edge Case</th><th>How We Handle</th></tr></thead><tbody><tr><td><code>mkdir</code> with duplicate name</td><td>Print error, return early</td></tr><tr><td><code>cd ..</code> at root</td><td>Print error (parent does not exist)</td></tr><tr><td><code>cd</code> with wrong folder name</td><td>Print error, do not move</td></tr><tr><td><code>cd /wrong/path</code></td><td>Print error mid-walk, do not move</td></tr><tr><td>Empty parts after split by <code>/</code></td><td>Skip with <code>if (part.empty()) continue</code></td></tr></tbody></table>
+<hr>
+<h2 id="step-9--improvements-how-to-scale">Step 9 — Improvements (How to Scale)</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Improvement</th><th>Why</th></tr></thead><tbody><tr><td>Add <strong>File</strong> class (not only Directory)</td><td>Real file systems have files also</td></tr><tr><td>Add <strong>permissions</strong> (read/write/execute)</td><td>Security — who can access what</td></tr><tr><td>Add <strong><code>ls()</code> method</strong></td><td>List all children of current directory</td></tr><tr><td>Use <strong><code>shared_ptr</code></strong> instead of raw pointers</td><td>Avoid memory leaks</td></tr><tr><td>Add <strong>move / rename / delete</strong> operations</td><td>Full file system support</td></tr><tr><td>Add <strong>symlinks</strong> (shortcuts)</td><td>Like Windows shortcuts</td></tr></tbody></table>
+<hr>
+<h2 id="complexity-analysis">Complexity Analysis</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Operation</th><th>Time Complexity</th><th>Why</th></tr></thead><tbody><tr><td><code>mkdir</code></td><td>O(log n)</td><td><code>map</code> insertion</td></tr><tr><td><code>cd</code> (child)</td><td>O(log n)</td><td><code>map</code> lookup</td></tr><tr><td><code>cd</code> (absolute path)</td><td>O(d × log n)</td><td>d = depth of path</td></tr><tr><td><code>pwd</code></td><td>O(d)</td><td>d = depth of current node</td></tr></tbody></table>
+<p><code>n</code> = number of children in a directory<br>
+<code>d</code> = depth of directory tree</p>
+<hr>
+<h2 id="key-concepts-used">Key Concepts Used</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Concept</th><th>Where Used</th></tr></thead><tbody><tr><td><strong>Tree data structure</strong></td><td>Directory hierarchy</td></tr><tr><td><strong>Linked list traversal</strong></td><td><code>pwd()</code> going up to root</td></tr><tr><td><strong>Stack</strong></td><td>Reversing path in <code>pwd()</code></td></tr><tr><td><strong>map</strong></td><td>Fast O(log n) child lookup</td></tr><tr><td><strong>Composition (has-a)</strong></td><td>Directory has children, FileSystem has root</td></tr><tr><td><strong>Pointers</strong></td><td>Navigating between nodes</td></tr></tbody></table>
+<hr>  </div> </article> </main> <footer data-astro-cid-sz7xmlte> <div class="footer-inner" data-astro-cid-sz7xmlte> <div class="footer-links" data-astro-cid-sz7xmlte> <div data-astro-cid-sz7xmlte> <strong data-astro-cid-sz7xmlte>Writing</strong> <a href="/blogs" data-astro-cid-sz7xmlte>Blogs</a> <a href="/notes" data-astro-cid-sz7xmlte>Notes</a> </div> <div data-astro-cid-sz7xmlte> <strong data-astro-cid-sz7xmlte>Connect</strong> <a href="https://linkedin.com/in/pankajchouhan0610" target="_blank" data-astro-cid-sz7xmlte>LinkedIn</a> </div> </div> <p class="copy" data-astro-cid-sz7xmlte>© Pankaj Chouhan, 2026</p> </div> </footer>    </body> </html> 

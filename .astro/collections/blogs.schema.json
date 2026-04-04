@@ -7,9 +7,6 @@
         "title": {
           "type": "string"
         },
-        "slug": {
-          "type": "string"
-        },
         "description": {
           "type": "string"
         },
@@ -28,7 +25,6 @@
       },
       "required": [
         "title",
-        "slug",
         "description",
         "date",
         "tags"

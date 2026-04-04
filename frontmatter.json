@@ -5,43 +5,21 @@
   "frontMatter.content.publicFolder": "public",
   "frontMatter.content.pageFolders": [
     {
-      "title": "blog",
-      "path": "[[workspace]]/src/content/blog"
+      "title": "blogs",
+      "path": "[[workspace]]/src/content/blogs",
+      "contentTypes": [
+        "blogs"
+      ]
     }
   ],
   "frontMatter.taxonomy.contentTypes": [
     {
-      "name": "default",
+      "name": "blogs",
+      "previewPath": "'blogs'",
       "pageBundle": false,
-      "previewPath": "'blog'",
-      "filePrefix": null,
       "clearEmpty": true,
-      "fields": [
-        {
-          "title": "Title",
-          "name": "title",
-          "type": "string",
-          "single": true
-        },
-        {
-          "title": "Description",
-          "name": "description",
-          "type": "string"
-        },
-        {
-          "title": "Publishing date",
-          "name": "pubDate",
-          "type": "datetime",
-          "default": "{{now}}",
-          "isPublishDate": true
-        },
-        {
-          "title": "Content preview",
-          "name": "heroImage",
-          "type": "image",
-          "isPreviewImage": true
-        }
-      ]
+      "fields": []
     }
-  ]
+  ],
+  "frontMatter.git.enabled": true
 }
